@@ -3,7 +3,7 @@ import sys
 from google import genai
 
 
-MODEL = "gemini-2.5-flash-lite"
+MODEL = "gemini-3.5-flash-lite"
 
 
 SYSTEM_PROMPT = """
@@ -18,9 +18,14 @@ Natural Indian Hinglish.
 IMPORTANT LANGUAGE RULE:
 Do NOT write formal textbook Hindi.
 Do NOT make the dialogue sound like a Hindi news anchor.
-Use the kind of Hindi + English mix commonly heard by Indian children and families.
 
-Examples of natural style:
+Use natural Indian conversational language containing:
+- Hindi
+- English
+- commonly used Urdu/Persian-origin words
+- casual expressions naturally used in India
+
+Examples:
 "Arre yaar!"
 "Bro, kya kar raha hai?"
 "Wait... ye kya ho gaya?"
@@ -28,130 +33,143 @@ Examples of natural style:
 "Guys, ab kya karein?"
 "Ye toh full problem ho gayi!"
 
-The language can naturally contain Hindi, English and commonly used Urdu/Persian-origin words where appropriate.
-
 CONTENT:
 Create ORIGINAL stories.
-Do not copy existing cartoons, movies, anime, characters, plots or copyrighted stories.
+
+Do not copy:
+- existing cartoons
+- movie characters
+- anime characters
+- existing YouTube stories
+- copyrighted plots
 
 STYLE:
 - funny
 - cute
-- emotional when appropriate
-- easy for children to understand
-- strong visual storytelling
-- simple dialogue
-- fast pacing
 - entertaining
-- positive takeaway or small life lesson
+- visually interesting
+- simple
+- fast paced
+- emotionally engaging when appropriate
+- suitable for children
 
 FORMAT:
 YouTube Shorts
-9:16 vertical
-Approximately 35-55 seconds
+Vertical 9:16
+35-55 seconds
 
 STORY STRUCTURE:
-1. 0-3 sec: VERY strong hook
-2. 3-12 sec: setup
-3. 12-30 sec: problem/conflict
-4. 30-45 sec: twist/payoff
-5. final seconds: satisfying ending or lesson
+0-3 sec:
+VERY strong hook.
+
+3-12 sec:
+Quick setup.
+
+12-30 sec:
+Problem/conflict.
+
+30-45 sec:
+Twist/payoff.
+
+45-55 sec:
+Ending or small natural lesson.
+
+IMPORTANT:
+The story should feel like an actual Indian kids cartoon Short.
 
 Avoid:
-- lectures
-- complicated vocabulary
-- excessive moral preaching
+- formal Hindi
+- long explanations
+- preaching
 - disturbing violence
 - sexual content
 - dangerous challenges
 - hateful content
-- frightening content unsuitable for young children
-- meaningless random AI scenes
+- excessively scary content
+- meaningless random scenes
 
-The story must make sense from beginning to end.
+The story must have a logical beginning, middle and ending.
 """
 
 
 def generate_script(topic: str) -> str:
+
     api_key = os.environ.get("GEMINI_API_KEY")
 
     if not api_key:
         raise RuntimeError(
-            "GEMINI_API_KEY is missing. Add it to GitHub Actions secrets."
+            "GEMINI_API_KEY is missing from GitHub Actions secrets."
         )
 
     client = genai.Client(api_key=api_key)
 
     prompt = f"""
-Create one original YouTube Shorts story.
+Create ONE original Indian kids YouTube Shorts story.
 
 TOPIC:
 {topic}
 
-Return the result in exactly this structure:
+Return EXACTLY this structure:
 
 TITLE:
 <short catchy title>
 
 HOOK:
-<1-2 sentences>
+<very strong first 1-2 lines>
 
 CHARACTERS:
-- <character>
-- <character>
+- <character 1>
+- <character 2>
 
 SCRIPT:
+
 [0-03 sec]
-...
+<dialogue + action>
 
 [03-10 sec]
-...
+<dialogue + action>
 
 [10-20 sec]
-...
+<dialogue + action>
 
 [20-30 sec]
-...
+<dialogue + action>
 
 [30-40 sec]
-...
+<dialogue + action>
 
 [40-55 sec]
-...
+<dialogue + action>
 
 LESSON:
 <one short natural takeaway>
 
 VISUAL_STYLE:
-<short description of the cartoon/animation style>
+<short description of the visual/cartoon style>
 
-IMPORTANT:
-The story must feel like something Indian children would actually enjoy watching.
-Use natural Hinglish dialogue.
-Do not make every sentence a moral lesson.
+Make the dialogue natural Indian Hinglish.
+
+Do NOT make the story sound like a school essay.
+
+Do NOT copy any existing character or cartoon.
 """
 
-    response = client.models.generate_content(
+    # Google's current API for new agentic applications.
+    interaction = client.interactions.create(
         model=MODEL,
-        contents=[
-            {
-                "role": "user",
-                "parts": [
-                    {
-                        "text": SYSTEM_PROMPT + "\n\n" + prompt
-                    }
-                ],
-            }
-        ],
+        input=SYSTEM_PROMPT + "\n\n" + prompt
     )
 
-    if not response.text:
+    result = interaction.output_text
+
+    if not result:
         raise RuntimeError("Gemini returned an empty response.")
 
-    return response.text
+    return result
 
 
 def main():
+
     topic = " ".join(sys.argv[1:]).strip()
 
     if not topic:
