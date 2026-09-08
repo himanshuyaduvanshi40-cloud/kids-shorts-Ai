@@ -34,6 +34,12 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python agents/script_agent.py "${{ inputs.topic }}"
+          
+      - name: Generate scene plan
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python agents/scene_agent.py
 
       - name: Commit generated script
         run: |
