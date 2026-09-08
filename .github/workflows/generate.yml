@@ -40,6 +40,12 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python agents/scene_agent.py
+          
+      - name: Generate first scene image
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python agents/media_agent.py
 
       - name: Commit generated files
         run: |
