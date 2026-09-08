@@ -1,108 +1,100 @@
 {
-  "title": "Mintu Ka Homework Hack! 🧠❌",
+  "title": "Mintu Ka Homework Ninja Trick!",
   "language": "Hinglish",
-  "target_audience": "Indian children approximately 6-12 years old",
-  "estimated_duration_seconds": 55,
-  "visual_style": "Bright, vibrant 2D cartoon animation style with exaggerated funny expressions, dramatic sound effects, and fast-paced editing. Consistent original cartoon universe.",
+  "target_audience": "Indian children 6-12 years old",
+  "estimated_duration_seconds": 45,
+  "visual_style": "Bright, colorful 2D cartoon animation with expressive, funny facial expressions and fast-paced comic sound effects in a consistent original cartoon universe",
   "characters": [
     {
       "name": "Mintu",
-      "age": "10 years old",
+      "age": "9 years old",
       "gender": "Male",
-      "appearance": "Short messy black hair, wheatish skin tone, wide expressive eyes, normal body proportions.",
-      "clothing": "Red t-shirt with a star logo, blue shorts, and red sneakers.",
-      "personality": "Super clever, mischievous, always finding lazy shortcuts."
+      "appearance": "9-year-old naughty boy with messy black hair tied in a small ponytail, wheatish skin tone, expressive round eyes",
+      "clothing": "Bright red T-shirt with a blue star graphic and blue denim shorts",
+      "personality": "Naughty, clever, mischievous, always trying to dodge homework"
     },
     {
       "name": "Mummy",
       "age": "35 years old",
       "gender": "Female",
-      "appearance": "Long black hair tied in a neat ponytail, warm wheatish skin tone, stern yet caring facial features.",
-      "clothing": "Teal green cotton saree with a yellow border.",
-      "personality": "Ninja-level observant, strict, loving, with superpower hearing."
-    },
-    {
-      "name": "Tommy",
-      "age": "2 years old (Dog)",
-      "gender": "Male",
-      "appearance": "Fluffy brown and white puppy with floppy ears and a wagging tail.",
-      "clothing": "No clothing, wearing a simple red collar.",
-      "personality": "Playful, curious pet dog."
+      "appearance": "Super observant Indian mother with black hair tied in a neat bun, warm wheatish skin tone, sharp and knowing eyes",
+      "clothing": "Teal green cotton saree with a yellow border",
+      "personality": "Strict, loving, zero tolerance for homework dodging, smart"
     }
   ],
   "scenes": [
     {
       "scene_number": 1,
-      "duration_seconds": 3,
-      "narration": "Bro, Mintu ne aisi ninja technique lagayi ki homework khud-b-khud gayab ho jaye! But wait... mom ka radar on hai!",
-      "dialogue": "Arre yaar! Ye math ka homework dekh ke na mujhe chakkar aa raha hai. Full torture hai ye!",
-      "action": "Mintu is looking at a heavy math notebook with a horror face. Zoom in on his expressions.",
-      "background": "Colorful Indian children's bedroom with study table, scattered books, and a colorful bookshelf.",
-      "camera": "Close-up shot, dramatic zoom in on Mintu's face.",
-      "emotion": "Horrified and overwhelmed",
-      "visual_description": "Mintu, a 10-year-old boy with short messy black hair, wheatish skin, wearing a red t-shirt with a star logo and blue shorts, staring in horror at a thick math notebook on his study table.",
-      "image_prompt": "Close-up vertical 9:16 composition of Mintu, a 10-year-old Indian boy with short messy black hair, wheatish skin, wearing a red t-shirt with a star logo, looking horrified and dizzy while staring at a heavy math notebook on a colorful study table. Bright vibrant 2D cartoon animation style, expressive funny cartoon eyes, indoor bedroom background, warm lighting."
+      "duration_seconds": 4,
+      "narration": "Wait... ye Mintu sofa ke peeche kyun chup raha hai? Kuch toh gadbad hai yaar!",
+      "dialogue": "Guys, mission 'Homework Escape' is ON! Mummy ko lag raha hai main padh raha hoon.",
+      "action": "Mintu slowly crawling behind the sofa, hiding a heavy math notebook.",
+      "background": "Cozy Indian living room with a colourful sofa and a patterned rug.",
+      "camera": "Low angle, medium close-up shot tracking Mintu's movement.",
+      "emotion": "Mischievous and sneaky",
+      "visual_description": "Mintu, a 9-year-old naughty boy with a messy black ponytail, wearing a bright red T-shirt with a blue star and blue shorts, is crawling on the floor behind a sofa while clutching a heavy math notebook with a sneaky grin.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mintu, a 9-year-old naughty Indian boy with messy black hair tied in a small ponytail, wheatish skin tone, wearing a bright red T-shirt with a blue star graphic and blue shorts, is crawling stealthily behind a colorful sofa in an Indian living room. He is holding a heavy math notebook, giving a mischievous and sneaky expression. Warm indoor lighting, medium close-up, sharp focus."
     },
     {
       "scene_number": 2,
-      "duration_seconds": 7,
-      "narration": "Mintu tries his ultimate lazy physics hack to absorb knowledge without opening a single page.",
-      "dialogue": "Idea! Agar main is book pe dhyan se so jaunga, toh saare formulas mere dimaag mein Bluetooth se transfer ho jayenge!",
-      "action": "Mintu puts his physics book on his head, closing his eyes tightly.",
-      "background": "Same colorful Indian children's bedroom and study table.",
-      "camera": "Medium shot, eye-level angle.",
-      "emotion": "Sly and hopeful",
-      "visual_description": "Mintu, wearing his red t-shirt and blue shorts, balances a thick physics book on top of his messy black hair, eyes squeezed shut with a funny smart-aleck smile.",
-      "image_prompt": "Medium vertical 9:16 composition of Mintu, a 10-year-old Indian boy with short messy black hair, wheatish skin, wearing a red t-shirt and blue shorts, sitting at his study table with a thick physics book balanced on his head, eyes closed tightly, smiling slyly. Bright vibrant 2D cartoon animation style, indoor bedroom background, clear lighting."
+      "duration_seconds": 6,
+      "narration": "Mintu apna master disguise use kar raha hai!",
+      "dialogue": "Main toh ek busy professor hoon! No homework, only science!",
+      "action": "Mintu wearing a fake paper moustache and glasses, acting like a serious statue.",
+      "background": "Living room corner with a bookshelf filled with colourful books.",
+      "camera": "Eye-level, medium shot with a quick zoom-in.",
+      "emotion": "Overconfident and funny",
+      "visual_description": "Mintu wearing a comical fake paper moustache taped to his upper lip and oversized paper glasses, striking a dramatic pose like a serious professor next to a bookshelf.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mintu, a 9-year-old naughty boy with messy black hair in a ponytail, wheatish skin tone, wearing a bright red T-shirt and blue shorts, has put on a funny fake paper moustache and oversized paper glasses. He is striking a dramatic, serious professor pose next to a bookshelf in a living room. Humorous expression, vibrant lighting, vertical 9:16 composition."
     },
     {
       "scene_number": 3,
-      "duration_seconds": 10,
-      "narration": "Even pets know when math is a disaster zone!",
-      "dialogue": "Dekha Tommy? Doggy ne bhi bol diya—Math is dangerous! Ab toh pakka exemption milni chahiye.",
-      "action": "Mintu's pet dog sniffs the math book and sneezes on it. Mintu opens one eye, smiling.",
-      "background": "Study room floor next to the study table.",
-      "camera": "Low angle shot, focusing on Mintu and his puppy.",
-      "emotion": "Amused and triumphant",
-      "visual_description": "Mintu, a 10-year-old boy with short messy black hair, red t-shirt, and blue shorts, looks down with one eye open while Tommy, a fluffy brown-and-white puppy, sneezes near the math book on the floor.",
-      "image_prompt": "Low angle vertical 9:16 composition of Mintu, a 10-year-old Indian boy with short messy black hair, wheatish skin, wearing a red t-shirt and blue shorts, sitting on the floor with one eye open and a triumphant smile, looking at a fluffy brown-and-white puppy named Tommy sneezing on a math book. Bright vibrant 2D cartoon animation style, indoor room background, bright lighting."
+      "duration_seconds": 7,
+      "narration": "Achanak, ye kiska shadow aa gaya door par?",
+      "dialogue": "Oh no... Mummy aagayi! Ab kya karein? Fast fast kuch socho!",
+      "action": "Mintu sweating profusely as a scary shadow appears on the wall holding a plate of samosas.",
+      "background": "Living room wall with a prominent shadow silhouette projected on it.",
+      "camera": "Wide shot transitioning to a dramatic close-up on Mintu's sweating face.",
+      "emotion": "Panicked and terrified",
+      "visual_description": "Mintu's face filled with pure panic, sweat drops flying off his head, while a threatening shadow of Mummy holding a plate of hot samosas looms large on the yellow living room wall.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mintu, a 9-year-old naughty boy with messy black hair in a ponytail, wheatish skin tone, wearing a red T-shirt and blue shorts, is sweating profusely with a panicked and terrified expression. On the wall behind him, a large shadow silhouette of an Indian mother holding a plate of samosas is visible. Dramatic lighting, vertical 9:16 composition."
     },
     {
       "scene_number": 4,
-      "duration_seconds": 10,
-      "narration": "Mission undercover gamer is successfully underway, or so he thinks.",
-      "dialogue": "Hehe, Mummy ko kya pata! Main toh undercover agent banke mission complete kar raha hoon.",
-      "action": "Mintu hides under the blanket with a flashlight, playing a game on his phone instead of studying.",
-      "background": "A cozy bed with a colorful blanket tent glowing from the inside.",
-      "camera": "Medium shot focusing on the glowing blanket tent.",
-      "emotion": "Secretive and excited",
-      "visual_description": "Mintu, a 10-year-old boy with short messy black hair and red t-shirt, hiding under a colorful blanket on his bed, holding a glowing smartphone and grinning mischievously in the dark.",
-      "image_prompt": "Medium vertical 9:16 composition of Mintu, a 10-year-old Indian boy with short messy black hair, wheatish skin, wearing a red t-shirt, hiding inside a blanket tent on a bed, holding a glowing smartphone, grinning mischievously with a flashlight glow on his face. Bright vibrant 2D cartoon animation style, dark bedroom with neon blanket glow."
+      "duration_seconds": 7,
+      "narration": "Quick jugaad mode activate!",
+      "dialogue": "Zzz... Mintu is sleeping... dreaming about equations... zzz.",
+      "action": "Mintu quickly covers his math book with a comic book and pretends to sleep with open eyes.",
+      "background": "Living room floor with the sofa behind him.",
+      "camera": "High-angle tracking shot, fast-paced pan.",
+      "emotion": "Fake calm and sly",
+      "visual_description": "Mintu frantically sliding a colourful comic book over his blank math notebook, lying flat on his back on the rug, eyes wide open pretending to snore loudly.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mintu, a 9-year-old naughty boy with messy black hair in a ponytail, wheatish skin tone, wearing a red T-shirt and blue shorts, is lying on a living room rug. He has hastily placed a colorful comic book on top of his blank math notebook and is pretending to sleep with wide-open eyes, making a funny snoring face. Bright indoor lighting, vertical 9:16 composition."
     },
     {
       "scene_number": 5,
-      "duration_seconds": 10,
-      "narration": "And then... disaster strikes with zero warning sound!",
-      "dialogue": "Wait... ye kya twist ho gaya?! Mummy, aap yahan teleport kaise ho gayi?!",
-      "action": "Suddenly, the blanket is pulled away with lightning speed. Mummy is standing with hands on her hips, holding a wooden spoon.",
-      "background": "The children's bedroom, wide view of the bed.",
-      "camera": "Dynamic wide shot, quick zoom out effect.",
-      "emotion": "Shocked and terrified",
-      "visual_description": "Mintu, looking terrified with hair standing on end in his red t-shirt, sitting on the bed as Mummy—a 35-year-old woman with a neat ponytail wearing a teal green saree—stands sternly with hands on her hips holding a wooden spoon.",
-      "image_prompt": "Dynamic wide vertical 9:16 composition of a terrified Mintu, a 10-year-old Indian boy with short messy black hair sticking up, wearing a red t-shirt, sitting on a bed with wide shocked eyes. Standing next to him is Mummy, a 35-year-old Indian woman with a neat ponytail wearing a teal green saree, standing sternly with hands on her hips and holding a wooden spoon. Bright vibrant 2D cartoon animation style, dramatic funny tension."
+      "duration_seconds": 8,
+      "narration": "Mummy ka radar kabhi fail nahi hota!",
+      "dialogue": "Wah beta! Math ka homework dream mein kar raha hai kya? Chal uth, pen nikaal!",
+      "action": "Mummy walks up, pulls the comic book away with lightning speed. The math book is completely blank.",
+      "background": "Living room floor with Mummy standing over Mintu.",
+      "camera": "Low angle looking up at Mummy, dramatic reveal shot.",
+      "emotion": "Annoyed and clever",
+      "visual_description": "Mummy, an observant Indian mother with hair in a neat bun, wearing a teal green cotton saree with a yellow border, snatches the comic book away with a swift hand motion to reveal a completely blank math notebook underneath.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mummy, a 35-year-old Indian mother with hair in a neat bun, wheatish skin tone, wearing a teal green cotton saree with a yellow border, stands over Mintu with an annoyed expression. She has just snatched away a comic book, revealing Mintu's completely blank math notebook. Mintu looks up nervously from the floor. Dynamic lighting, vertical 9:16 composition."
     },
     {
       "scene_number": 6,
       "duration_seconds": 15,
-      "narration": "Guys, kabhi shortcuts mat try karna! Warna Mummy ki chappal-guided missile se koi nahi bacha sakta!",
-      "dialogue": "Guys, kabhi shortcuts mat try karna! Warna Mummy ki chappal-guided missile se koi nahi bacha sakta!",
-      "action": "Mintu is sitting at the study table, crying dramatically while writing with both hands.",
-      "background": "Same study room, neat desk with books open.",
-      "camera": "Medium close-up shot, centered on Mintu.",
-      "emotion": "Regretful and dramatic",
-      "visual_description": "Mintu, a 10-year-old boy with short messy black hair, red t-shirt, and blue shorts, sitting at his study table with cartoon tear streams on his face, frantically writing with a pencil in each hand under the strict supervision of Mummy in her teal saree standing in the background.",
-      "image_prompt": "Medium close-up vertical 9:16 composition of Mintu, a 10-year-old Indian boy with short messy black hair, wheatish skin, wearing a red t-shirt, sitting at a study table crying dramatic anime tears while writing with pencils in both hands. In the background, Mummy stands in her teal green saree looking stern. Bright vibrant 2D cartoon animation style, emotional and funny scene, indoor lighting."
+      "narration": "Moral of the story... bhagte raho, par homework peecha nahi chodega!",
+      "dialogue": "Bro, ye homework kabhi khatam hi nahi hota! Samosa bhi cold ho gaya!",
+      "action": "Mintu sitting at the study table, crying dramatically with a samosa in his mouth while writing.",
+      "background": "A messy study table with books, pencils, and a plate containing a cold samosa.",
+      "camera": "Static eye-level medium shot focusing on Mintu's funny expression.",
+      "emotion": "Hilariously defeated and dramatic",
+      "visual_description": "Mintu sitting on a chair at a study table, making an exaggerated dramatic crying face with tear streams, a half-eaten cold samosa stuffed in his cheek, desperately writing in his math notebook with a pencil.",
+      "image_prompt": "Vertical 9:16 composition, bright 2D cartoon animation. Mintu, a 9-year-old naughty boy with messy black hair in a ponytail, wheatish skin tone, wearing a red T-shirt and blue shorts, is sitting at a study table. He is making a hilarious, exaggerated dramatic crying face with big tear drops while holding a pencil and writing in a math notebook. A cold samosa is stuck in his mouth. Bright lighting, humorous mood, vertical 9:16 composition."
     }
   ],
-  "ending_lesson": "Shortcut ka chakkar, padega bhaari! Homework time pe khatam karo, warna Mummy ki entry fix hai! 😉"
+  "ending_lesson": "Homework se bhago mat, jaldi khatam karo toh samosa double milega!"
 }
