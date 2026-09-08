@@ -41,16 +41,16 @@ jobs:
         run: |
           python agents/scene_agent.py
 
-      - name: Commit generated script
+      - name: Commit generated files
         run: |
           git config user.name "Kids Shorts AI"
           git config user.email "actions@users.noreply.github.com"
-
-          git add outputs/latest_script.txt
-
+      
+          git add outputs/
+      
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Generate new kids Shorts script"
+            git commit -m "Generate new AI content"
             git push
           fi
