@@ -1,199 +1,192 @@
 import json
 import os
+import re
+import time
 from pathlib import Path
 
 from gradio_client import Client, handle_file
 
 
 # ============================================================
-# CONFIG
+# CONFIGURATION
 # ============================================================
 
 OUTPUT_DIR = Path("outputs/media")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-IMAGE_FILE = OUTPUT_DIR / "scene_01.png"
-VIDEO_FILE = OUTPUT_DIR / "scene_01.mp4"
+IMAGE_WIDTH = 720
+IMAGE_HEIGHT = 1280
 
-VIDEO_SPACE = os.environ.get(
-    "VIDEO_SPACE",
-    "zerogpu-aoti/wan2-2-fp8da-aoti-faster"
+# Public Hugging Face Space.
+# We keep this configurable because Spaces can change.
+IMAGE_SPACE = os.environ.get(
+    "IMAGE_SPACE",
+    "mrfakename/Z-Image-Turbo"
+)
+
+IMAGE_API = os.environ.get(
+    "IMAGE_API",
+    "/generate_image"
 )
 
 
 # ============================================================
-# LOAD STORY
+# HELPERS
 # ============================================================
 
 def load_story():
+    filename = Path("outputs/story.json")
 
-    story_file = Path("outputs/story.json")
-
-    if not story_file.exists():
+    if not filename.exists():
         raise FileNotFoundError(
-            "outputs/story.json was not found."
+            "outputs/story.json does not exist."
         )
 
-    with open(
-        story_file,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
+    with open(filename, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
-# ============================================================
-# VIDEO PROMPT
-# ============================================================
+def clean_filename(text: str) -> str:
+    text = re.sub(r"[^a-zA-Z0-9_-]+", "_", text)
+    return text.strip("_")[:60]
 
-def build_motion_prompt(story, scene):
 
-    action = scene.get(
-        "action",
-        "subtle natural movement"
+def create_character_reference(story):
+    """
+    Creates a reusable description containing all character
+    consistency information.
+    """
+
+    characters = story.get("characters", [])
+
+    if not characters:
+        return "No named characters. Use the visual description."
+
+    lines = []
+
+    for char in characters:
+        lines.append(
+            f"""
+Character: {char.get('name', 'Unknown')}
+Age: {char.get('age', 'child')}
+Gender: {char.get('gender', '')}
+Appearance: {char.get('appearance', '')}
+Clothing: {char.get('clothing', '')}
+Personality: {char.get('personality', '')}
+""".strip()
+        )
+
+    return "\n\n".join(lines)
+
+
+def build_image_prompt(story, scene):
+    character_reference = create_character_reference(story)
+
+    visual_style = story.get(
+        "visual_style",
+        "bright expressive 3D cartoon animation"
     )
 
-    emotion = scene.get(
-        "emotion",
-        "natural expression"
+    scene_prompt = scene.get(
+        "image_prompt",
+        scene.get("visual_description", "")
     )
 
-    camera = scene.get(
-        "camera",
-        "gentle cinematic camera movement"
-    )
+    prompt = f"""
+Create a single high-quality children's cartoon frame.
 
-    return f"""
-Animate this children's cartoon scene.
+VISUAL STYLE:
+{visual_style}
 
-ACTION:
-{action}
+CHARACTER CONSISTENCY:
+{character_reference}
+
+SCENE:
+{scene_prompt}
+
+SCENE ACTION:
+{scene.get('action', '')}
 
 EMOTION:
-{emotion}
+{scene.get('emotion', '')}
+
+BACKGROUND:
+{scene.get('background', '')}
 
 CAMERA:
-{camera}
+{scene.get('camera', '')}
 
-Create smooth natural animation.
-
-Keep the character's:
-- face
-- hairstyle
-- clothing
-- body proportions
-- colors
-
-consistent with the input image.
-
-Do not add new characters.
-
-Do not change the scene unnecessarily.
-
-Keep the animation cute, expressive and suitable
-for Indian children.
-
-Vertical/portrait composition.
-
-Motion should feel like a polished children's
-animated Short.
-
-Avoid:
-- distorted faces
-- extra fingers
-- extra limbs
-- character duplication
-- sudden camera jumps
-- text
-- subtitles
-- watermark
+IMPORTANT:
+- Original fictional characters only.
+- Keep character appearance identical to the descriptions.
+- Keep clothing identical.
+- Keep hairstyles identical.
+- Child-friendly.
+- Clean composition.
+- Strong facial expression.
+- Clear foreground and background separation.
+- Designed for YouTube Shorts.
+- Vertical 9:16 composition.
+- No text.
+- No watermark.
 """
 
+    return " ".join(prompt.split())
+
 
 # ============================================================
-# GENERATE VIDEO
+# IMAGE GENERATION
 # ============================================================
 
-def generate_video(
-    image_path,
-    prompt,
-    duration_seconds=3.5
-):
+def generate_image(prompt: str, output_path: Path):
 
-    print()
-    print("🎬 Connecting to Wan 2.2...")
-    print(f"Space: {VIDEO_SPACE}")
+    print(f"🖼 Connecting to image Space: {IMAGE_SPACE}")
 
-    client = Client(VIDEO_SPACE)
+    client = Client(IMAGE_SPACE)
 
-    print("📤 Uploading image...")
-    print("🎞️ Generating video...")
-    print()
+    print("🎨 Generating image...")
 
-    # Current public Wan 2.2 Fast Space exposes:
-    # image + prompt + steps + negative prompt +
-    # duration + guidance + seed parameters.
-    #
-    # We use conservative settings for our first test.
+    # Z-Image-Turbo spaces commonly expose a /generate_image
+    # endpoint. The exact interface can change between Space
+    # revisions, so we keep the endpoint configurable.
 
     result = client.predict(
-        handle_file(str(image_path)),
         prompt,
-        6,
-        "色调艳丽, 过曝, 静态, 细节模糊不清, "
-        "字幕, 风格, 作品, 画作, 画面, 静止, "
-        "整体发灰, 最差质量, 低质量, JPEG压缩残留, "
-        "丑陋的, 残缺的, 多余的手指, "
-        "画得不好的手部, 画得不好的脸部, "
-        "畸形的, 毁容的, 形态畸形的肢体, "
-        "手指融合, 静止不动的画面, "
-        "杂乱的背景, 三条腿, 背景人很多, 倒着走",
-        duration_seconds,
-        1,
-        1,
-        42,
-        True,
-        api_name="/generate_video",
+        api_name=IMAGE_API
     )
 
-    if not result:
+    # Gradio results can be:
+    # - a filepath
+    # - a list/tuple
+    # - a dictionary containing a path/url
+
+    value = result
+
+    if isinstance(value, (list, tuple)):
+        value = value[0]
+
+    if isinstance(value, dict):
+        value = (
+            value.get("path")
+            or value.get("url")
+        )
+
+    if not value:
         raise RuntimeError(
-            "Video provider returned no result."
+            "Image provider returned no image."
         )
 
-    # Result is expected to contain the generated
-    # video path as the first item.
-
-    video_path = result
-
-    if isinstance(video_path, (list, tuple)):
-        video_path = video_path[0]
-
-    if isinstance(video_path, dict):
-        video_path = (
-            video_path.get("path")
-            or video_path.get("url")
-        )
-
-    if not video_path:
-        raise RuntimeError(
-            "Could not locate generated video."
-        )
-
-    source = Path(video_path)
+    # Copy the generated file into our repository output.
+    source = Path(value)
 
     if not source.exists():
         raise RuntimeError(
-            f"Generated video was not found: {source}"
+            f"Returned image does not exist: {source}"
         )
 
-    source.replace(VIDEO_FILE)
+    source.replace(output_path)
 
-    print()
-    print("✅ VIDEO GENERATED")
-    print(f"📁 {VIDEO_FILE}")
-
+    print(f"✅ Saved: {output_path}")
 
 
 # ============================================================
@@ -202,7 +195,8 @@ def generate_video(
 
 def main():
 
-    print("🚀 Video Agent starting...")
+    print("🎬 Media Agent starting...")
+    print()
 
     story = load_story()
 
@@ -210,40 +204,53 @@ def main():
 
     if not scenes:
         raise RuntimeError(
-            "No scenes found in story.json."
+            "story.json contains no scenes."
         )
 
-    if not IMAGE_FILE.exists():
-        raise FileNotFoundError(
-            f"Missing image: {IMAGE_FILE}"
-        )
+    print(f"📖 Loaded {len(scenes)} scenes.")
+    print()
+
+    # For this first test, generate ONLY ONE scene.
+    # We don't want to burn time/queue capacity generating
+    # every scene until the provider connection is confirmed.
 
     scene = scenes[0]
 
-    prompt = build_motion_prompt(
+    scene_number = scene.get(
+        "scene_number",
+        1
+    )
+
+    prompt = build_image_prompt(
         story,
         scene
     )
 
-    print()
-    print("────────────────────────────")
-    print("SCENE 1")
-    print("────────────────────────────")
-    print(prompt)
+    output_name = (
+        f"scene_{int(scene_number):02d}.png"
+    )
 
-    generate_video(
-        IMAGE_FILE,
+    output_path = OUTPUT_DIR / output_name
+
+    print("────────────────────────────────")
+    print(f"Scene: {scene_number}")
+    print("────────────────────────────────")
+    print()
+    print("Prompt:")
+    print(prompt)
+    print()
+
+    generate_image(
         prompt,
-        duration_seconds=3.5
+        output_path
     )
 
     print()
     print("================================")
-    print("🎉 VIDEO TEST SUCCESSFUL")
+    print("✅ MEDIA TEST SUCCESSFUL")
     print("================================")
+    print(f"Image: {output_path}")
 
 
-if __name__ == "__main__":
-    main()
 if __name__ == "__main__":
     main()
