@@ -109,7 +109,12 @@ Each scene should usually be 3-7 seconds.
 
 Avoid creating too many scenes.
 
-Prefer 6-10 scenes for a normal Short.
+For testing, create 4-6 scenes.
+
+Each scene should usually be 6-10 seconds.
+
+The total story should remain approximately
+30-50 seconds.
 
 Each scene needs:
 
