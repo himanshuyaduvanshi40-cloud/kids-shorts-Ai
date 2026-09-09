@@ -8,9 +8,6 @@ from gradio_client import Client, handle_file
 OUTPUT_DIR = Path("outputs/media")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-IMAGE_FILE = OUTPUT_DIR / "scene_01.png"
-VIDEO_FILE = OUTPUT_DIR / "scene_01.mp4"
-
 VIDEO_SPACE = os.environ.get(
     "VIDEO_SPACE",
     "zerogpu-aoti/wan2-2-fp8da-aoti-faster"
@@ -19,91 +16,100 @@ VIDEO_SPACE = os.environ.get(
 
 def load_story():
 
+    story_file = Path("outputs/story.json")
+
+    if not story_file.exists():
+        raise FileNotFoundError(
+            "outputs/story.json was not found."
+        )
+
     with open(
-        "outputs/story.json",
+        story_file,
         "r",
         encoding="utf-8"
     ) as file:
-
         return json.load(file)
 
 
-def build_prompt(scene):
+def build_motion_prompt(scene):
 
     return f"""
-Animate this children's cartoon image.
+Animate this children's cartoon scene.
 
-Action:
-{scene.get("action", "")}
+ACTION:
+{scene.get('action', '')}
 
-Emotion:
-{scene.get("emotion", "")}
+EMOTION:
+{scene.get('emotion', '')}
 
-Camera:
-{scene.get("camera", "")}
+CAMERA:
+{scene.get('camera', '')}
 
-Create smooth, natural movement.
+Create smooth natural movement.
 
-Keep the exact character appearance,
-clothing, hairstyle, proportions and colors.
+Maintain the exact character design from
+the input image.
 
-Do not change the character design.
+Keep:
+- hairstyle
+- face
+- clothing
+- colors
+- proportions
+- accessories
 
-Do not add characters.
+consistent.
 
-Cute polished children's animation.
+Keep the same environment.
 
-Vertical portrait composition.
+Animation should be:
+- cute
+- expressive
+- smooth
+- child friendly
+- visually clear
 
-No text.
-No subtitles.
-No watermark.
+Do not introduce new characters.
 
-Avoid:
-distorted faces,
-extra fingers,
-extra limbs,
-duplicated characters,
-sudden camera movement.
+Do not distort faces.
+
+Do not create extra limbs.
+
+Do not create duplicate characters.
+
+Do not add text.
+
+Do not add subtitles.
+
+Do not add watermark.
+
+Portrait / vertical composition.
 """
 
 
-def generate_video():
+def generate_video(
+    image_path,
+    prompt,
+    output_path
+):
 
-    story = load_story()
-
-    scenes = story.get("scenes", [])
-
-    if not scenes:
-        raise RuntimeError(
-            "story.json contains no scenes."
-        )
-
-    if not IMAGE_FILE.exists():
-        raise FileNotFoundError(
-            IMAGE_FILE
-        )
-
-    scene = scenes[0]
-
-    prompt = build_prompt(scene)
-
-    print("🎬 Connecting to Wan 2.2...")
-    print(f"Space: {VIDEO_SPACE}")
+    print("   Connecting to Wan 2.2...")
 
     client = Client(VIDEO_SPACE)
 
-    print("📤 Uploading scene image...")
-    print("⏳ Waiting for GPU...")
-    print("🎞️ Generating video...")
+    print("   Uploading image...")
+    print("   Waiting for GPU...")
+    print("   Generating video...")
 
     result = client.predict(
-        handle_file(str(IMAGE_FILE)),
+        handle_file(str(image_path)),
         prompt,
         6,
-        "色调艳丽, 过曝, 静态, 细节模糊不清, "
-        "字幕, 静止, 最差质量, 低质量, "
-        "多余的手指, 畸形的, 杂乱背景",
+        "static image, blurry, low quality, "
+        "text, subtitles, watermark, "
+        "deformed face, extra limbs, "
+        "extra fingers, duplicate character, "
+        "bad anatomy",
         3.5,
         1,
         1,
@@ -123,22 +129,92 @@ def generate_video():
 
     if not result:
         raise RuntimeError(
-            "No video was returned."
+            "Video provider returned no result."
         )
 
     source = Path(result)
 
     if not source.exists():
         raise RuntimeError(
-            f"Returned video does not exist: {source}"
+            f"Video file not found: {source}"
         )
 
-    source.replace(VIDEO_FILE)
+    source.replace(output_path)
 
+
+def main():
+
+    print("🎬 Video Agent")
+    print("==========================")
+
+    story = load_story()
+
+    scenes = story.get("scenes", [])
+
+    if not scenes:
+        raise RuntimeError(
+            "No scenes found."
+        )
+
+    print(f"Found {len(scenes)} scenes.")
     print()
-    print("✅ Video generated!")
-    print(f"📁 {VIDEO_FILE}")
+
+    for index, scene in enumerate(
+        scenes,
+        start=1
+    ):
+
+        scene_number = scene.get(
+            "scene_number",
+            index
+        )
+
+        image_path = (
+            OUTPUT_DIR /
+            f"scene_{int(scene_number):02d}.png"
+        )
+
+        video_path = (
+            OUTPUT_DIR /
+            f"scene_{int(scene_number):02d}.mp4"
+        )
+
+        print(
+            f"🎞️ Scene {scene_number}/{len(scenes)}"
+        )
+
+        if not image_path.exists():
+            print(
+                f"   ❌ Missing image: {image_path}"
+            )
+            raise FileNotFoundError(
+                image_path
+            )
+
+        if video_path.exists():
+            print(
+                f"   ⏭️ Already exists: {video_path}"
+            )
+            print()
+            continue
+
+        prompt = build_motion_prompt(scene)
+
+        generate_video(
+            image_path,
+            prompt,
+            video_path
+        )
+
+        print(
+            f"   ✅ Saved {video_path}"
+        )
+        print()
+
+    print("==========================")
+    print("✅ ALL SCENE VIDEOS READY")
+    print("==========================")
 
 
 if __name__ == "__main__":
-    generate_video()
+    main()
