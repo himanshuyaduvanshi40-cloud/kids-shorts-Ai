@@ -1,9 +1,8 @@
 import json
 import os
 from pathlib import Path
-
 from gradio_client import Client, handle_file
-
+import subprocess
 
 OUTPUT_DIR = Path("outputs/media")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -86,6 +85,59 @@ Do not add watermark.
 Portrait / vertical composition.
 """
 
+def convert_to_vertical(input_path, output_path):
+    """
+    Convert generated video to 1080x1920.
+
+    A blurred enlarged copy creates the background,
+    while the original video stays sharp in the center.
+    """
+
+    command = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(input_path),
+
+        "-filter_complex",
+
+        (
+            "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,"
+            "crop=1080:1920,"
+            "gblur=sigma=35,"
+            "eq=brightness=-0.15[bg];"
+
+            "[0:v]scale=1080:1920:force_original_aspect_ratio=decrease,"
+            "pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
+            "setsar=1[fg];"
+
+            "[bg][fg]overlay=(W-w)/2:(H-h)/2[outv]"
+        ),
+
+        "-map",
+        "[outv]",
+
+        "-c:v",
+        "libx264",
+
+        "-preset",
+        "veryfast",
+
+        "-crf",
+        "20",
+
+        "-pix_fmt",
+        "yuv420p",
+
+        "-an",
+
+        str(output_path),
+    ]
+
+    subprocess.run(
+        command,
+        check=True
+    )
 
 def generate_video(
     image_path,
