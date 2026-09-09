@@ -44,7 +44,12 @@ jobs:
       - name: Generate scene images
         run: |
           python agents/media_agent.py
-      
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+            
       - name: Generate scene videos
         run: |
           python agents/video_agent.py
