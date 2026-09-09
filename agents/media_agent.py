@@ -1,24 +1,14 @@
 import json
 import os
 import re
-import time
 from pathlib import Path
 
-from gradio_client import Client, handle_file
+from gradio_client import Client
 
-
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 OUTPUT_DIR = Path("outputs/media")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-IMAGE_WIDTH = 720
-IMAGE_HEIGHT = 1280
-
-# Public Hugging Face Space.
-# We keep this configurable because Spaces can change.
 IMAGE_SPACE = os.environ.get(
     "IMAGE_SPACE",
     "mrfakename/Z-Image-Turbo"
@@ -30,81 +20,66 @@ IMAGE_API = os.environ.get(
 )
 
 
-# ============================================================
-# HELPERS
-# ============================================================
-
 def load_story():
-    filename = Path("outputs/story.json")
+    story_file = Path("outputs/story.json")
 
-    if not filename.exists():
+    if not story_file.exists():
         raise FileNotFoundError(
-            "outputs/story.json does not exist."
+            "outputs/story.json was not found."
         )
 
-    with open(filename, "r", encoding="utf-8") as file:
+    with open(
+        story_file,
+        "r",
+        encoding="utf-8"
+    ) as file:
         return json.load(file)
 
 
-def clean_filename(text: str) -> str:
-    text = re.sub(r"[^a-zA-Z0-9_-]+", "_", text)
-    return text.strip("_")[:60]
-
-
-def create_character_reference(story):
-    """
-    Creates a reusable description containing all character
-    consistency information.
-    """
-
+def build_character_reference(story):
     characters = story.get("characters", [])
 
-    if not characters:
-        return "No named characters. Use the visual description."
+    result = []
 
-    lines = []
-
-    for char in characters:
-        lines.append(
+    for character in characters:
+        result.append(
             f"""
-Character: {char.get('name', 'Unknown')}
-Age: {char.get('age', 'child')}
-Gender: {char.get('gender', '')}
-Appearance: {char.get('appearance', '')}
-Clothing: {char.get('clothing', '')}
-Personality: {char.get('personality', '')}
+Character name: {character.get('name', '')}
+Age: {character.get('age', '')}
+Gender: {character.get('gender', '')}
+Appearance: {character.get('appearance', '')}
+Clothing: {character.get('clothing', '')}
+Personality: {character.get('personality', '')}
 """.strip()
         )
 
-    return "\n\n".join(lines)
+    return "\n\n".join(result)
 
 
 def build_image_prompt(story, scene):
-    character_reference = create_character_reference(story)
 
-    visual_style = story.get(
+    style = story.get(
         "visual_style",
         "bright expressive 3D cartoon animation"
     )
 
-    scene_prompt = scene.get(
-        "image_prompt",
-        scene.get("visual_description", "")
+    character_reference = build_character_reference(
+        story
     )
 
     prompt = f"""
-Create a single high-quality children's cartoon frame.
+Create a high-quality children's cartoon frame.
 
-VISUAL STYLE:
-{visual_style}
+GLOBAL VISUAL STYLE:
+{style}
 
-CHARACTER CONSISTENCY:
+CHARACTER REFERENCE:
 {character_reference}
 
-SCENE:
-{scene_prompt}
+CURRENT SCENE:
+{scene.get('visual_description', '')}
 
-SCENE ACTION:
+ACTION:
 {scene.get('action', '')}
 
 EMOTION:
@@ -116,87 +91,82 @@ BACKGROUND:
 CAMERA:
 {scene.get('camera', '')}
 
-IMPORTANT:
-- Original fictional characters only.
-- Keep character appearance identical to the descriptions.
-- Keep clothing identical.
-- Keep hairstyles identical.
-- Child-friendly.
-- Clean composition.
-- Strong facial expression.
-- Clear foreground and background separation.
-- Designed for YouTube Shorts.
-- Vertical 9:16 composition.
-- No text.
-- No watermark.
+CRITICAL CHARACTER CONSISTENCY:
+The characters must look exactly consistent
+with the character reference.
+
+Keep:
+- face
+- hairstyle
+- clothing
+- colors
+- body proportions
+- age
+- accessories
+
+consistent.
+
+The image must be:
+- child friendly
+- colorful
+- expressive
+- cinematic
+- clean
+- visually readable
+- vertical 9:16
+
+Do not add text.
+Do not add subtitles.
+Do not add watermark.
+Do not use copyrighted characters.
+
+Vertical 9:16 composition.
 """
 
     return " ".join(prompt.split())
 
 
-# ============================================================
-# IMAGE GENERATION
-# ============================================================
+def generate_image(prompt, output_path):
 
-def generate_image(prompt: str, output_path: Path):
-
-    print(f"🖼 Connecting to image Space: {IMAGE_SPACE}")
+    print("   Connecting to image provider...")
 
     client = Client(IMAGE_SPACE)
 
-    print("🎨 Generating image...")
-
-    # Z-Image-Turbo spaces commonly expose a /generate_image
-    # endpoint. The exact interface can change between Space
-    # revisions, so we keep the endpoint configurable.
+    print("   Generating image...")
 
     result = client.predict(
         prompt,
         api_name=IMAGE_API
     )
 
-    # Gradio results can be:
-    # - a filepath
-    # - a list/tuple
-    # - a dictionary containing a path/url
+    if isinstance(result, (list, tuple)):
+        result = result[0]
 
-    value = result
-
-    if isinstance(value, (list, tuple)):
-        value = value[0]
-
-    if isinstance(value, dict):
-        value = (
-            value.get("path")
-            or value.get("url")
+    if isinstance(result, dict):
+        result = (
+            result.get("path")
+            or result.get("url")
         )
 
-    if not value:
+    if not result:
         raise RuntimeError(
-            "Image provider returned no image."
+            "Image provider returned no result."
         )
 
-    # Copy the generated file into our repository output.
-    source = Path(value)
+    source = Path(result)
 
     if not source.exists():
         raise RuntimeError(
-            f"Returned image does not exist: {source}"
+            f"Generated image does not exist: {source}"
         )
 
     source.replace(output_path)
 
-    print(f"✅ Saved: {output_path}")
-
-
-# ============================================================
-# MAIN
-# ============================================================
 
 def main():
 
-    print("🎬 Media Agent starting...")
-    print()
+    print("🎨 Media Agent")
+    print("==========================")
 
     story = load_story()
 
@@ -204,52 +174,54 @@ def main():
 
     if not scenes:
         raise RuntimeError(
-            "story.json contains no scenes."
+            "No scenes found."
         )
 
-    print(f"📖 Loaded {len(scenes)} scenes.")
+    print(f"Found {len(scenes)} scenes.")
     print()
 
-    # For this first test, generate ONLY ONE scene.
-    # We don't want to burn time/queue capacity generating
-    # every scene until the provider connection is confirmed.
+    for index, scene in enumerate(scenes, start=1):
 
-    scene = scenes[0]
+        scene_number = scene.get(
+            "scene_number",
+            index
+        )
 
-    scene_number = scene.get(
-        "scene_number",
-        1
-    )
+        output_file = (
+            OUTPUT_DIR /
+            f"scene_{int(scene_number):02d}.png"
+        )
 
-    prompt = build_image_prompt(
-        story,
-        scene
-    )
+        print(
+            f"🎨 Scene {scene_number}/{len(scenes)}"
+        )
 
-    output_name = (
-        f"scene_{int(scene_number):02d}.png"
-    )
+        # Avoid regenerating an existing image.
+        if output_file.exists():
+            print(
+                f"   ⏭️ Already exists: {output_file}"
+            )
+            print()
+            continue
 
-    output_path = OUTPUT_DIR / output_name
+        prompt = build_image_prompt(
+            story,
+            scene
+        )
 
-    print("────────────────────────────────")
-    print(f"Scene: {scene_number}")
-    print("────────────────────────────────")
-    print()
-    print("Prompt:")
-    print(prompt)
-    print()
+        generate_image(
+            prompt,
+            output_file
+        )
 
-    generate_image(
-        prompt,
-        output_path
-    )
+        print(
+            f"   ✅ Saved {output_file}"
+        )
+        print()
 
-    print()
-    print("================================")
-    print("✅ MEDIA TEST SUCCESSFUL")
-    print("================================")
-    print(f"Image: {output_path}")
+    print("==========================")
+    print("✅ ALL SCENE IMAGES READY")
+    print("==========================")
 
 
 if __name__ == "__main__":
